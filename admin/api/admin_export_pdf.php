@@ -1,8 +1,15 @@
 <?php
 // admin/api/admin_export_pdf.php
 declare(strict_types=1);
-if (session_status() === PHP_SESSION_NONE)
+
+require_once __DIR__ . "/../../dompdf/autoload.inc.php";
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
 
 if (empty($_SESSION["admin_id"])) {
     http_response_code(401);
@@ -13,56 +20,87 @@ $DB_HOST = "localhost";
 $DB_NAME = "new_web2_main";
 $DB_USER = "root";
 $DB_PASS = "";
+
 try {
-    $pdo = new PDO("mysql:host={$DB_HOST};dbname={$DB_NAME};charset=utf8mb4", $DB_USER, $DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+    $pdo = new PDO(
+        "mysql:host={$DB_HOST};dbname={$DB_NAME};charset=utf8mb4",
+        $DB_USER,
+        $DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
 } catch (Throwable $e) {
     die("DB error");
 }
 
-$id = (int) ($_GET["id"] ?? 0);
-if (!$id)
+$id = (int)($_GET["id"] ?? 0);
+if (!$id) {
     die("No ID provided");
+}
 
-$st = $pdo->prepare("SELECT ms.*, u.first_name, u.last_name, u.email, u.phone FROM membership_submissions ms LEFT JOIN users u ON ms.user_id = u.id WHERE ms.id = ?");
+$st = $pdo->prepare("
+    SELECT ms.*, u.first_name, u.last_name, u.email, u.phone
+    FROM membership_submissions ms
+    LEFT JOIN users u ON ms.user_id = u.id
+    WHERE ms.id = ?
+");
 $st->execute([$id]);
 $row = $st->fetch();
-if (!$row)
+
+if (!$row) {
     die("Not found");
+}
 
 $f = json_decode($row["form_json"] ?? "{}", true) ?: [];
 
-function v($val)
+function v($val): string
 {
-    return htmlspecialchars((string) ($val ?? ""), ENT_QUOTES);
+    return htmlspecialchars((string)($val ?? ""), ENT_QUOTES, 'UTF-8');
 }
-function row2($l1, $v1, $l2, $v2)
+
+function row2($l1, $v1, $l2, $v2): string
 {
     return "<tr><td class='lbl'>{$l1}</td><td class='val'>" . v($v1) . "</td><td class='lbl'>{$l2}</td><td class='val'>" . v($v2) . "</td></tr>";
 }
-function row1($l1, $v1)
+
+function row1($l1, $v1): string
 {
     return "<tr><td class='lbl'>{$l1}</td><td class='val' colspan='3'>" . v($v1) . "</td></tr>";
 }
 
+$mode = $_GET["mode"] ?? "print";
+
 $photo = "";
 if (!empty($row["photo_path"])) {
-    $abs = __DIR__ . "/../" . $row["photo_path"];
+    $abs = __DIR__ . "/../../" . ltrim($row["photo_path"], "/");
     if (file_exists($abs)) {
         $imgData = base64_encode(file_get_contents($abs));
-        $mime = str_ends_with($abs, ".png") ? "image/png" : "image/jpeg";
+        $mime = str_ends_with(strtolower($abs), ".png") ? "image/png" : "image/jpeg";
         $photo = "<img src='data:{$mime};base64,{$imgData}' style='width:90px;height:110px;object-fit:cover;border:1px solid #ccc;' />";
     }
 }
 
-header("Content-Type: text/html; charset=utf-8");
+$fullName = trim(($f["first_name"] ?? $row["first_name"] ?? "") . " " . ($f["last_name"] ?? $row["last_name"] ?? ""));
+$fileName = "membership_application_" . preg_replace('/[^A-Za-z0-9_-]/', '_', $fullName ?: ("ID_" . $row["id"])) . ".pdf";
+
+$logoSmall = "";
+$logoPath = __DIR__ . "/../../images/limcoma logoo.png";
+
+if (file_exists($logoPath)) {
+    $data = base64_encode(file_get_contents($logoPath));
+    $logoSmall = "<img src='data:image/png;base64,$data' style='height:18px;margin-right:-4px;vertical-align:middle;'>";
+}
+
+ob_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <title>Membership Form - <?= v(($f["first_name"] ?? $row["first_name"]) . " " . ($f["last_name"] ?? $row["last_name"])) ?>
-    </title>
+    <title>Membership Form - <?= v($fullName) ?></title>
     <style>
         * {
             box-sizing: border-box;
@@ -75,7 +113,7 @@ header("Content-Type: text/html; charset=utf-8");
             font-size: 11px;
             color: #000;
             background: #fff;
-            padding: 10px;
+            padding: 10px 10PX 0 10PX;
         }
 
         .header {
@@ -97,11 +135,44 @@ header("Content-Type: text/html; charset=utf-8");
             margin-top: 2px;
         }
 
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .top-meta {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 8px;
+        }
+
+        .top-meta td {
+            vertical-align: top;
+            border: none;
+            padding: 0;
+        }
+
+        .meta-left {
+            width: 55%;
+        }
+
+        .meta-mid {
+            width: 20%;
+            text-align: center;
+        }
+
+        .meta-photo {
+            width: 25%;
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .photo-box {
+            width: 110px;
+            height: 130px;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .status-badge {
@@ -123,7 +194,7 @@ header("Content-Type: text/html; charset=utf-8");
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         th.section {
@@ -150,13 +221,6 @@ header("Content-Type: text/html; charset=utf-8");
             border: 1px solid #ccc;
         }
 
-        .photo-cell {
-            float: right;
-            margin: 0 0 8px 12px;
-            text-align: center;
-            font-size: 9px;
-        }
-
         .benef-table th {
             background: #e8f0f8;
             color: #15355a;
@@ -171,12 +235,39 @@ header("Content-Type: text/html; charset=utf-8");
         }
 
         .footer {
-            margin-top: 16px;
+            margin-top: 4px;
             border-top: 1px solid #ccc;
-            padding-top: 8px;
+            padding-top: 4px;
             font-size: 9px;
             color: #666;
             text-align: center;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .header-top img {
+            height: 18px;
+            position: relative;
+            top: 2px;
+        }
+
+        .coop-name {
+            font-size: 10px;
+            color: #444;
+            line-height: 1;
+        }
+
+        .form-title {
+            font-size: 14px;
+            color: #15355a;
+            letter-spacing: 1px;
+            font-weight: bold;
+            margin-top: 2px;
         }
 
         @media print {
@@ -188,9 +279,12 @@ header("Content-Type: text/html; charset=utf-8");
                 display: none !important;
             }
 
+            .status-badge {
+                display: none !important;
+            }
+
             @page {
                 margin: 12mm;
-                size: A4;
             }
         }
     </style>
@@ -198,40 +292,56 @@ header("Content-Type: text/html; charset=utf-8");
 
 <body>
 
-    <div class="no-print" style="margin-bottom:12px;">
-        <button onclick="window.print()"
-            style="padding:8px 18px;background:#15355a;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-weight:bold;">🖨️
-            Print / Save as PDF</button>
-        <button onclick="window.close()"
-            style="padding:8px 14px;background:#6b7280;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;margin-left:8px;">Close</button>
-    </div>
+    <?php if ($mode !== "pdf"): ?>
+        <div class="no-print" style="margin-bottom:12px;">
+            <button onclick="window.print()"
+                style="padding:8px 18px;background:#15355a;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-weight:bold;">🖨️ Print</button>
+
+            <button onclick="window.location.href='?id=<?= (int)$row["id"] ?>&mode=pdf'"
+                style="padding:8px 18px;background:#16a34a;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;font-weight:bold;margin-left:8px;">📄 Export as PDF</button>
+
+            <button onclick="window.close()"
+                style="padding:8px 14px;background:#6b7280;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer;margin-left:8px;">Close</button>
+        </div>
+    <?php endif; ?>
 
     <div class="header">
-        <h1>MEMBERSHIP APPLICATION FORM</h1>
-        <p>LIMCOMA MULTI-PURPOSE COOPERATIVE</p>
-    </div>
-
-    <div class="top-row">
-        <div>
-            <strong>Application Type:</strong> <?= v($f["application_type"] ?? "") ?><br />
-            <strong>Application #:</strong> <?= $row["id"] ?><br />
-            <strong>Submitted:</strong> <?= v(substr($row["submitted_at"] ?? "", 0, 10)) ?>
-        </div>
-        <div>
-            <?php
-            $s = $row["status"] ?? "Incomplete";
-            $cls = $s === "Approved" ? "" : "incomplete";
-            $label = $s === "Approved" ? "Approved / Active" : "Incomplete";
-            ?>
-            <span class="status-badge <?= $cls ?>"><?= $label ?></span>
-        </div>
-        <div class="photo-cell">
-            <?= $photo ?: "<div style='width:90px;height:110px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:9px;'>No Photo</div>" ?>
-            <div>2x2 Photo</div>
+        <div class="form-title">MEMBERSHIP APPLICATION FORM</div>
+        <div class="header-top">
+            <?= $logoSmall ?>
+            <span class="coop-name">LIMCOMA MULTI-PURPOSE COOPERATIVE</span>
         </div>
     </div>
 
-    <!-- PERSONAL -->
+    <table class="top-meta">
+        <tr>
+            <td class="meta-left">
+                <strong>Application Type:</strong> <?= v($f["application_type"] ?? "") ?><br />
+                <strong>Application #:</strong> <?= (int)$row["id"] ?><br />
+                <strong>Submitted:</strong> <?= v(substr($row["submitted_at"] ?? "", 0, 10)) ?>
+            </td>
+
+            <td class="meta-mid">
+                <?php
+                $s = $row["status"] ?? "Incomplete";
+                $cls = $s === "Approved" ? "" : "incomplete";
+                $label = $s === "Approved" ? "Approved / Active" : "Incomplete";
+                ?>
+                <?php if ($mode !== "pdf"): ?>
+                    <span class="status-badge <?= $cls ?>"><?= v($label) ?></span>
+                <?php endif; ?>
+            </td>
+
+            <td class="meta-photo">
+                <?php if ($photo): ?>
+                    <div class="photo-box"><?= $photo ?></div>
+                <?php else: ?>
+                    <div class="photo-box" style="line-height:110px;color:#aaa;font-size:9px;">No Photo</div>
+                <?php endif; ?>
+            </td>
+        </tr>
+    </table>
+
     <table>
         <tr>
             <th class="section" colspan="4">Personal Information</th>
@@ -245,7 +355,6 @@ header("Content-Type: text/html; charset=utf-8");
         <?= row2("Livelihood", $f["livelihood"] ?? "", "Gross Monthly Income", $f["gross_monthly_income"] ?? "") ?>
     </table>
 
-    <!-- CONTACT -->
     <table>
         <tr>
             <th class="section" colspan="4">Contact & Work Information</th>
@@ -257,7 +366,6 @@ header("Content-Type: text/html; charset=utf-8");
         <?= row2("Years Working Abroad", $f["ofw_years"] ?? "", "", "") ?>
     </table>
 
-    <!-- FAMILY -->
     <table>
         <tr>
             <th class="section" colspan="4">Family Information</th>
@@ -268,12 +376,12 @@ header("Content-Type: text/html; charset=utf-8");
         <?= row2("Mother's Name", $f["mother_name"] ?? "", "Mother's Occupation", $f["mother_occupation"] ?? "") ?>
     </table>
 
-    <!-- BENEFICIARIES -->
     <table>
         <tr>
             <th class="section" colspan="4">Beneficiaries</th>
         </tr>
     </table>
+
     <table class="benef-table" style="margin-bottom:8px;">
         <tr>
             <th>#</th>
@@ -293,7 +401,6 @@ header("Content-Type: text/html; charset=utf-8");
         <?php endfor; ?>
     </table>
 
-    <!-- PRODUCTS -->
     <table>
         <tr>
             <th class="section" colspan="4">Products / Services</th>
@@ -307,7 +414,6 @@ header("Content-Type: text/html; charset=utf-8");
         <?= row1("Iba pang Alaga", $f["iba_pang_alaga"] ?? "") ?>
     </table>
 
-    <!-- DECLARATION -->
     <table>
         <tr>
             <th class="section" colspan="4">Declaration</th>
@@ -325,9 +431,26 @@ header("Content-Type: text/html; charset=utf-8");
     <?php endif; ?>
 
     <div class="footer">
-        © LIMCOMA MULTI-PURPOSE COOPERATIVE &nbsp;|&nbsp; Printed: <?= date("F d, Y") ?>
+        © LIMCOMA MULTI-PURPOSE COOPERATIVE
     </div>
 
 </body>
 
 </html>
+<?php
+$html = ob_get_clean();
+
+if ($mode === "pdf") {
+    $options = new Options();
+    $options->set('isRemoteEnabled', true);
+
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('letter', 'portrait');
+    $dompdf->render();
+    $dompdf->stream($fileName, ['Attachment' => true]);
+    exit;
+}
+
+header("Content-Type: text/html; charset=utf-8");
+echo $html;

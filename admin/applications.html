@@ -154,12 +154,10 @@
       <input type="text" id="searchInput" placeholder="Search by name or email..." style="min-width:220px;" />
       <select id="statusFilter">
         <option value="">All Status</option>
-        <option value="Approved">Approved / Active</option>
+        <option value="Approved">Approved</option>
         <option value="Incomplete">Incomplete</option>
       </select>
       <button class="btn btn-primary" onclick="loadApplications()">Search</button>
-      <a id="exportBtn" href="api/admin_export.php" class="btn btn-success">Export CSV</a>
-      <button class="btn btn-success" onclick="exportPDF()" id="exportBtn">Export PDF</button>
     </div>
 
     <div id="alertBox"></div>
@@ -199,7 +197,11 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('viewModal')">Close</button>
         <button class="btn btn-primary"
-          onclick="window.open('api/admin_export_pdf.php?id=' + currentViewId, '_blank')">Export / Print PDF</button>
+          onclick="window.open('api/admin_export_pdf.php?id=' + currentViewId + '&mode=print', '_blank')">🖨️
+          Print</button>
+        <button class="btn btn-success"
+          onclick="window.open('api/admin_export_pdf.php?id=' + currentViewId + '&mode=pdf', '_blank')">📄 Export as
+          PDF</button>
       </div>
     </div>
   </div>
@@ -282,8 +284,10 @@
       if (search) url += "&search=" + encodeURIComponent(search);
       if (status) url += "&status=" + encodeURIComponent(status);
 
-      // Update export link
-      exportBtn.href = "api/admin_export.php" + (status ? "?status=" + encodeURIComponent(status) : "");
+      // Update export link only if button exists
+      if (exportBtn) {
+        exportBtn.href = "api/admin_export.php" + (status ? "?status=" + encodeURIComponent(status) : "");
+      }
 
       const r = await fetch(url, { credentials: "include" });
       const data = await r.json();
@@ -296,21 +300,21 @@
       }
 
       tbody.innerHTML = data.data.map(row => `
-      <tr>
-        <td>${row.id}</td>
-        <td>${esc(row.first_name || "")} ${esc(row.last_name || "")}</td>
-        <td>${esc(row.email || "")}</td>
-        <td>${esc(row.phone || "")}</td>
-        <td><span class="badge badge-${row.status.toLowerCase()}">${row.status}</span></td>
-        <td>${row.submitted_at ? row.submitted_at.slice(0, 10) : ""}</td>
-        <td>
-          <button class="btn btn-info btn-sm" onclick="openView(${row.id})">View</button>
-          <button class="btn btn-warning btn-sm" onclick="openStatus(${row.id}, '${row.status}')">Status</button>
-          <button class="btn btn-primary btn-sm" onclick="openEdit(${row.id})">Edit</button>
-          ${currentRole === "admin" ? `<button class="btn btn-danger btn-sm" onclick="deleteApp(${row.id})">Delete</button>` : ""}
-        </td>
-      </tr>
-    `).join("");
+    <tr>
+      <td>${row.id}</td>
+      <td>${esc(row.first_name || "")} ${esc(row.last_name || "")}</td>
+      <td>${esc(row.email || "")}</td>
+      <td>${esc(row.phone || "")}</td>
+      <td><span class="badge ${row.status ? 'badge-' + row.status.toLowerCase() : ''}">${row.status || '—'}</span></td>
+      <td>${row.submitted_at ? row.submitted_at.slice(0, 10) : ""}</td>
+      <td>
+        <button class="btn btn-info btn-sm" onclick="openView(${row.id})">View</button>
+        <button class="btn btn-warning btn-sm" onclick="openStatus(${row.id}, '${row.status}')">Status</button>
+        <button class="btn btn-primary btn-sm" onclick="openEdit(${row.id})">Edit</button>
+        ${currentRole === "admin" ? `<button class="btn btn-danger btn-sm" onclick="deleteApp(${row.id})">Delete</button>` : ""}
+      </td>
+    </tr>
+  `).join("");
     }
 
     function exportPDF() {
@@ -337,7 +341,7 @@
       const f = d.form_data || {};
 
       const photo = d.photo_path
-        ? `<img src="../api/${d.photo_path}" style="width:90px;height:110px;object-fit:cover;border:1px solid #ccc;" />`
+        ? `<img src="../${d.photo_path}" style="width:90px;height:110px;object-fit:cover;border:1px solid #ccc;" />`
         : `<div style="width:90px;height:110px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#888;">No Photo</div>`;
 
       document.getElementById("viewBody").innerHTML = `
@@ -407,6 +411,17 @@
         ${field("Feeds Brand", f.feeds_brand)}
       </div>
 
+      <div class="section-head">Livestock (Feeds Details)</div>
+      <div class="detail-grid">
+        ${field("Baboy - Sow", f.baboy_sow)}
+        ${field("Baboy - Piglet", f.baboy_piglet)}
+        ${field("Baboy - Boar", f.baboy_boar)}
+        ${field("Baboy - Grower", f.baboy_grower)}
+        ${field("Manok - Patilugin", f.manok_patilugin)}
+        ${field("Manok - Broiler", f.manok_broiler)}
+        ${field("Iba pang Alaga", f.iba_pang_alaga)}
+      </div>
+
       <div class="section-head">Declaration</div>
       <div class="detail-grid">
         ${field("Signature (Typed Name)", f.signature)}
@@ -418,7 +433,7 @@
     function field(label, value) {
       return `<div class="detail-item">
       <div class="detail-label">${label}</div>
-      <div class="detail-value">${value ? esc(String(value)) : '<span style="color:#bbb;">—</span>'}</div>
+      <div class="detail-value">${value !== undefined && value !== null && value !== "" ? esc(String(value)) : '<span style="color:#bbb;">—</span>'}</div>
     </div>`;
     }
 

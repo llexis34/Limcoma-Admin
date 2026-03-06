@@ -4,36 +4,54 @@
 declare(strict_types=1);
 require __DIR__ . "/admin_db.php";
 
-$admin  = require_admin_login();
+$admin = require_admin_login();
 $action = $_GET["action"] ?? "list";
 
 try {
     // ── LIST users ──────────────────────────────────────────
     if ($action === "list") {
-    $search = trim($_GET["search"] ?? "");
-    $params = [];
-    $where  = "";
+        $search = trim($_GET["search"] ?? "");
+        $params = [];
+        $where = "";
 
-    if ($search !== "") {
-        $where  = "WHERE first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone LIKE ? OR CAST(id AS CHAR) LIKE ?";
-        $like   = "%" . $search . "%";
-        $params = [$like, $like, $like, $like, $like];
+        if ($search !== "") {
+            $like = "%" . $search . "%";
+            $parts = preg_split('/\s+/', $search, 2);
+            if (count($parts) === 2) {
+                $where = "WHERE (
+            (first_name LIKE ? AND last_name LIKE ?)
+            OR (last_name LIKE ? AND first_name LIKE ?)
+            OR CONCAT(first_name,' ',last_name) LIKE ?
+            OR email LIKE ?
+        )";
+                $params = [
+                    "%" . $parts[0] . "%",
+                    "%" . $parts[1] . "%",
+                    "%" . $parts[0] . "%",
+                    "%" . $parts[1] . "%",
+                    $like,
+                    $like,
+                ];
+            } else {
+                $where = "WHERE (first_name LIKE ? OR last_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+                $params = [$like, $like, $like, $like];
+            }
+        }
+
+        $sql = "SELECT id, first_name, last_name, email, phone, is_active, created_at FROM users {$where} ORDER BY created_at DESC";
+        $st = $pdo->prepare($sql);
+        $st->execute($params);
+        echo json_encode(["ok" => true, "data" => $st->fetchAll()]);
+        exit;
     }
-
-    $sql = "SELECT id, first_name, last_name, email, phone, is_active, created_at FROM users {$where} ORDER BY created_at DESC";
-    $st  = $pdo->prepare($sql);
-    $st->execute($params);
-    echo json_encode(["ok" => true, "data" => $st->fetchAll()]);
-    exit;
-}
 
     // ── TOGGLE ACTIVE ───────────────────────────────────────
     if ($action === "toggle_active") {
         require_post();
         require_full_admin();
-        $data      = json_input();
-        $id        = (int)($data["id"] ?? 0);
-        $is_active = (int)(bool)($data["is_active"] ?? 0);
+        $data = json_input();
+        $id = (int) ($data["id"] ?? 0);
+        $is_active = (int) (bool) ($data["is_active"] ?? 0);
 
         $pdo->prepare("UPDATE users SET is_active=? WHERE id=?")->execute([$is_active, $id]);
         echo json_encode(["ok" => true]);
@@ -45,7 +63,7 @@ try {
         require_post();
         require_full_admin();
         $data = json_input();
-        $id   = (int)($data["id"] ?? 0);
+        $id = (int) ($data["id"] ?? 0);
 
         // Also delete their membership submissions
         $pdo->prepare("DELETE FROM membership_submissions WHERE user_id=?")->execute([$id]);

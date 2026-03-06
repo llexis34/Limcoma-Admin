@@ -16,19 +16,34 @@ try {
         $where = [];
         $params = [];
 
-        if ($status_filter !== "" && in_array($status_filter, ["Pending", "Approved", "Rejected"], true)) {
+        if ($status_filter !== "" && in_array($status_filter, ["Approved", "Incomplete"], true)) {
             $where[] = "ms.status = ?";
             $params[] = $status_filter;
         }
 
         if ($search !== "") {
             $like = "%" . $search . "%";
-            $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR CAST(ms.id AS CHAR) LIKE ? OR ms.form_json LIKE ?)";
-            $params[] = $like;
-            $params[] = $like;
-            $params[] = $like;
-            $params[] = $like;
-            $params[] = $like;
+            $parts = preg_split('/\s+/', $search, 2);
+            if (count($parts) === 2) {
+                $where[] = "(
+            (u.first_name LIKE ? AND u.last_name LIKE ?)
+            OR (u.last_name LIKE ? AND u.first_name LIKE ?)
+            OR CONCAT(u.first_name,' ',u.last_name) LIKE ?
+            OR u.email LIKE ?
+        )";
+                $params[] = "%" . $parts[0] . "%";
+                $params[] = "%" . $parts[1] . "%";
+                $params[] = "%" . $parts[0] . "%";
+                $params[] = "%" . $parts[1] . "%";
+                $params[] = $like;
+                $params[] = $like;
+            } else {
+                $where[] = "(u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR CAST(ms.id AS CHAR) LIKE ?)";
+                $params[] = $like;
+                $params[] = $like;
+                $params[] = $like;
+                $params[] = $like;
+            }
         }
 
         $whereSQL = $where ? "WHERE " . implode(" AND ", $where) : "";
@@ -46,6 +61,10 @@ try {
         $st->execute($params);
         $rows = $st->fetchAll();
 
+        foreach ($rows as &$r) {
+            $r["status"] = $r["status"] ?? "";
+        }
+        unset($r);
         echo json_encode(["ok" => true, "data" => $rows]);
         exit;
     }

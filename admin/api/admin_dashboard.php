@@ -16,6 +16,7 @@ try {
 
     $stats["incomplete"] = (int) $pdo->query("SELECT COUNT(*) FROM membership_submissions WHERE status = 'Incomplete'")->fetchColumn();
     $stats["approved"] = (int) $pdo->query("SELECT COUNT(*) FROM membership_submissions WHERE status = 'Approved'")->fetchColumn();
+    $stats["active"] = (int) $pdo->query("SELECT COUNT(*) FROM users WHERE is_active = 1")->fetchColumn();
 
     // Recent 5 applications
     $recent = $pdo->query("
@@ -26,6 +27,12 @@ try {
         ORDER BY ms.submitted_at DESC
         LIMIT 5
     ")->fetchAll();
+
+    // Null-safe status for recent rows
+    foreach ($recent as &$row) {
+        $row["status"] = $row["status"] ?? "";
+    }
+    unset($row);
 
     echo json_encode(["ok" => true, "stats" => $stats, "recent" => $recent]);
 } catch (Throwable $e) {

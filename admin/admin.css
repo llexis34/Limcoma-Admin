@@ -143,9 +143,24 @@ body {
 /* ── STAT BOXES ──────────────────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+}
+
+.dashboard-recent-card {
+  grid-column: 1 / -1;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
 }
 
 .stat-box {
