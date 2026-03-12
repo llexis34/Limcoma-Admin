@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Libraries -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <!-- Your main styles -->
+  <link rel="stylesheet" href="membership_page.css" />
+  <link rel="shortcut icon" href="images/limcoma logoo.png" type="image/x-icon" />
+  <title>Membership Application | LIMCOMA</title>
+
+  <style>
+    .m-card{ border-radius:16px; overflow:hidden; color:#000; }
+    .m-body{ background:#fff; }
+    .m-body-soft{ background:#f6f8f7; }
+    .m-foot{ background:#fff; }
+
+    .m-head-danger{ background:#b91c1c; color:#fff; }
+    .m-head-primary{ background:#15355a; color:#fff; }
+
+    .btn-pill{ border-radius:999px; font-weight:800; color:#fff; background:#000; }
+    .btn-pill-primary{ border-radius:999px; font-weight:900; background:#15355a; border:none; color:#fff; }
+
+    .confirm-box{
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:14px;
+      background:#fff;
+    }
+    .confirm-scroll{ max-height:55vh; overflow:auto; }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="container d-flex align-items-center justify-content-between py-2">
+      <div class="brand">
+        <img src="images/limcoma logoo.png" alt="LIMCOMA Logo" />
+        LIMCOMA
+      </div>
+
+      <div class="d-flex align-items-center">
+        <a href="membership_page.html" class="nav-link active">Membership</a>
+        <button id="logoutBtn" class="btn btn-logout ml-2" type="button">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <div class="container">
+
+      <div class="form-header">
+        <div class="header-left">
+          <div class="header-title">MEMBERSHIP APPLICATION FORM</div>
+          <div class="header-sub">LIMCOMA MULTI-PURPOSE COOPERATIVE</div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-code">
+            <div class="code-label">CODE NO.</div>
+            <input class="code-input" name="code_no" type="text" placeholder="(office use)" />
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="friendly-guide">
+          <div class="guide-title">
+            <i class="fas fa-info-circle"></i> Gabay sa Pag-fill Out
+          </div>
+          <div class="guide-text">
+            Paki-complete ang lahat ng sagot bago mag-submit. Kapag hindi pa nasasagutan, ito ay
+            <strong>magiging pula</strong>. Kung hindi applicable ang isang tanong, maaari mong ilagay ang
+            <strong>N/A</strong> sa text field at <strong>0</strong> sa number field.
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <div class="checklist-helper-text">
+            <i class="fas fa-hand-point-right"></i>
+            Need to know what documents to prepare? Open the checklist below.
+          </div>
+
+          <button
+            type="button"
+            class="btn checklist-cta-btn"
+            data-toggle="modal"
+            data-target="#checklistModal"
+            aria-label="Open checklist requirements"
+          >
+            <span class="checklist-cta-icon">
+              <i class="fas fa-clipboard-check"></i>
+            </span>
+
+            <span class="checklist-cta-text">
+              <span class="checklist-cta-title">Open Checklist Requirements</span>
+              <span class="checklist-cta-sub">Click here to view the documents and requirements needed</span>
+            </span>
+
+            <span class="checklist-cta-arrow">
+              <i class="fas fa-chevron-right"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <form id="membershipForm" autocomplete="on" novalidate>
+        <div class="paper">
+
+          <div class="paper-top">
+            <div class="paper-cell">
+              <div class="cell-label">Application Type <span class="req-star">*</span></div>
+              <div class="checks" data-required-group="application_type">
+                <label class="chk"><input type="radio" name="application_type" value="Associate" required /> Associate</label>
+                <label class="chk"><input type="radio" name="application_type" value="Regular" required /> Regular</label>
+                <label class="chk"><input type="radio" name="application_type" value="Transfer to Regular" required /> Transfer to Regular</label>
+              </div>
+              <div class="input-guide">Pumili ng isang uri ng aplikasyon.</div>
+
+              <div id="agreementStatusBox" class="agreement-status-box mt-3">
+                <div class="agreement-status-item" id="subscriptionAgreementStatus">
+                  <i class="fas fa-file-signature"></i>
+                  <span>Subscription Agreement: <strong class="status-text">Not yet accepted</strong></span>
+                </div>
+                <div class="agreement-status-item" id="kasunduanStatus">
+                  <i class="fas fa-book-open"></i>
+                  <span>Kasunduan / Capital Agreement: <strong class="status-text">Not yet accepted</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="paper-cell">
+              <div class="cell-label">Code No.</div>
+              <input class="field" name="code_no_inside" type="text" placeholder="(office use)" />
+              <div class="mini-note">Same as header (for print style).</div>
+            </div>
+
+            <div class="paper-cell photo-cell">
+              <div class="photo-box">
+                <div class="photo-title">RECENT<br />2x2 picture <span class="req-star">*</span></div>
+                <img id="photoPreview" alt="2x2 Preview" />
+                <input id="photoInput" class="photo-input" type="file" accept="image/*" required />
+                <div class="photo-hint">Upload clear recent photo</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LOCKED UNTIL SUBSCRIPTION AGREEMENT ACCEPTED -->
+          <div id="formLockedArea">
+
+            <div class="grid-3">
+              <div class="box">
+                <div class="cell-label">Last Name <span class="req-star">*</span></div>
+                <input class="field" name="last_name" type="text" placeholder="Halimbawa: Dela Cruz" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">First Name <span class="req-star">*</span></div>
+                <input class="field" name="first_name" type="text" placeholder="Halimbawa: Juan" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Middle Name <span class="req-star">*</span></div>
+                <input class="field" name="middle_name" type="text" placeholder="Ilagay ang Middle Name o N/A" required />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="box">
+                <div class="cell-label">Tirahan (Complete Mailing Address) <span class="req-star">*</span></div>
+                <input class="field" name="home_address" type="text" placeholder="House No., Street, Barangay, City, Province, Zip Code" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Kasarian (Gender) <span class="req-star">*</span></div>
+                <div class="checks" data-required-group="gender">
+                  <label class="chk"><input type="radio" name="gender" value="Male" required /> Male</label>
+                  <label class="chk"><input type="radio" name="gender" value="Female" required /> Female</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-5">
+              <div class="box">
+                <div class="cell-label">Relihiyon (Religion) <span class="req-star">*</span></div>
+                <input class="field" name="religion" type="text" placeholder="Religion" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Kapanganakan (Birthdate) <span class="req-star">*</span></div>
+                <input class="field" name="birthdate" type="date" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Edad (Age) <span class="req-star">*</span></div>
+                <input class="field" name="age" type="number" min="1" placeholder="0" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Bilang ng dependents <span class="req-star">*</span></div>
+                <input class="field" name="dependents" type="number" min="0" placeholder="0" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Katayuang Sibil (Civil Status) <span class="req-star">*</span></div>
+                <div class="checks small" data-required-group="civil_status">
+                  <label class="chk"><input type="radio" name="civil_status" value="Single" required /> Single</label>
+                  <label class="chk"><input type="radio" name="civil_status" value="Married" required /> Married</label>
+                  <label class="chk"><input type="radio" name="civil_status" value="Widower" required /> Widower</label>
+                  <label class="chk"><input type="radio" name="civil_status" value="Separated" required /> Separated</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="box">
+                <div class="cell-label">Educational Attainment <span class="req-star">*</span></div>
+                <input class="field" name="education" type="text" placeholder="Educational Attainment" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Hanapbuhay (Pinagkakakitaan) <span class="req-star">*</span></div>
+                <input class="field" name="livelihood" type="text" placeholder="Work / Source of income" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Halaga ng buwanang kita (Gross monthly income) <span class="req-star">*</span></div>
+                <input class="field" name="gross_monthly_income" type="number" min="0" placeholder="0" required />
+              </div>
+            </div>
+
+            <div class="grid-5">
+              <div class="box">
+                <div class="cell-label">Telepono <span class="req-star">*</span></div>
+                <input class="field" name="telephone" type="text" placeholder="Telephone or N/A" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Mobile No. <span class="req-star">*</span></div>
+                <input class="field" name="mobile" type="text" placeholder="+63 9XX XXX XXXX" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Email Address <span class="req-star">*</span></div>
+                <input class="field" id="autoEmail" name="email" type="email" placeholder="you@email.com" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Facebook Profile Link <span class="req-star">*</span></div>
+                <input class="field" name="facebook_link" type="url" placeholder="https://facebook.com/yourprofile" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">TIN <span class="req-star">*</span></div>
+                <input class="field" name="tin" type="text" placeholder="000-000-000-000" required />
+              </div>
+            </div>
+
+            <div class="grid-1">
+              <div class="box">
+                <div class="cell-label">Lugar ng Hanapbuhay (Complete Mailing Address) <span class="req-star">*</span></div>
+                <input class="field" name="work_address" type="text" placeholder="House No., Street, Barangay, City, Province, Zip Code" required />
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="box">
+                <div class="cell-label">Kung OFW, Bansa (Country of origin) <span class="req-star">*</span></div>
+                <input class="field" name="ofw_country" type="text" placeholder="Country or N/A" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Trabaho (Work abroad) <span class="req-star">*</span></div>
+                <input class="field" name="ofw_work" type="text" placeholder="Work abroad or N/A" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Bilang ng Taon ng Pagtratrabaho (No. of years working abroad) <span class="req-star">*</span></div>
+                <input class="field" name="ofw_years" type="number" min="0" placeholder="0" required />
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="box">
+                <div class="cell-label">Pangalan ng asawa (Spouse name) <span class="req-star">*</span></div>
+                <input class="field" name="spouse_name" type="text" placeholder="Spouse name or N/A" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Hanapbuhay (Occupation) <span class="req-star">*</span></div>
+                <input class="field" name="spouse_occupation" type="text" placeholder="Occupation or N/A" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Pangalan ng pinagtatrabahuhan (Name of company) <span class="req-star">*</span></div>
+                <input class="field" name="spouse_company" type="text" placeholder="Company name or N/A" required />
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="box">
+                <div class="cell-label">Pangalan ng Ama (Father’s Name) <span class="req-star">*</span></div>
+                <input class="field" name="father_name" type="text" placeholder="Father's name" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Hanapbuhay (Occupation) <span class="req-star">*</span></div>
+                <input class="field" name="father_occupation" type="text" placeholder="Occupation" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Pangalan ng Ina (Mother’s Name) <span class="req-star">*</span></div>
+                <input class="field" name="mother_name" type="text" placeholder="Mother's name" required />
+              </div>
+              <div class="box">
+                <div class="cell-label">Hanapbuhay (Occupation) <span class="req-star">*</span></div>
+                <input class="field" name="mother_occupation" type="text" placeholder="Occupation" required />
+              </div>
+            </div>
+
+            <div class="section-title">Mga BENEFICIARY(S) (kasama ang asawa kung meron)</div>
+            <div class="benef-wrap">
+              <div class="benef-head">
+                <div>Pangalan</div><div>Relasyon</div><div>% Allocation</div><div>Contact Number (kung meron)</div>
+              </div>
+
+              <div class="benef-row">
+                <input class="field" name="benef_name_1" type="text" placeholder="Name" />
+                <input class="field" name="benef_relation_1" type="text" placeholder="Relation" />
+                <input class="field" name="benef_alloc_1" type="number" min="0" max="100" placeholder="%" />
+                <input class="field" name="benef_contact_1" type="text" placeholder="Contact No." />
+              </div>
+
+              <div class="benef-row">
+                <input class="field" name="benef_name_2" type="text" placeholder="Name" />
+                <input class="field" name="benef_relation_2" type="text" placeholder="Relation" />
+                <input class="field" name="benef_alloc_2" type="number" min="0" max="100" placeholder="%" />
+                <input class="field" name="benef_contact_2" type="text" placeholder="Contact No." />
+              </div>
+
+              <div class="benef-row">
+                <input class="field" name="benef_name_3" type="text" placeholder="Name" />
+                <input class="field" name="benef_relation_3" type="text" placeholder="Relation" />
+                <input class="field" name="benef_alloc_3" type="number" min="0" max="100" placeholder="%" />
+                <input class="field" name="benef_contact_3" type="text" placeholder="Contact No." />
+              </div>
+
+              <div class="benef-row">
+                <input class="field" name="benef_name_4" type="text" placeholder="Name" />
+                <input class="field" name="benef_relation_4" type="text" placeholder="Relation" />
+                <input class="field" name="benef_alloc_4" type="number" min="0" max="100" placeholder="%" />
+                <input class="field" name="benef_contact_4" type="text" placeholder="Contact No." />
+              </div>
+            </div>
+
+            <div class="grid-1">
+              <div class="box">
+                <div class="mini-paragraph">
+                  Sa kaso ng kamatayan, ang mga nabanggit na benepisyaryo ang tatanggap ng anumang benepisyo na dapat kong makuha bilang isang miyembro
+                  ng kooperatiba batay sa porsyento ng alokasyon na nasaad dito. Gayundin, ang aking tagapagmana na si _____________ ay papayagang
+                  makipagtransaksyon sa kooperatiba, bumili ng mga produkto nito, habang hinihintay na maaprubahan ang kanyang aplikasyon ng pagiging miyembro.
+                </div>
+              </div>
+            </div>
+
+            <div class="section-title">Mga Produkto / Serbisyo</div>
+            <div class="grid-1">
+              <div class="box">
+                <div class="cell-label">Alin sa mga produkto ng LIMCOMA ang nais mong i-avail? <span class="req-star">*</span></div>
+
+                <div class="product-row required-check-group" data-required-check-group="products">
+                  <label class="chk"><input type="checkbox" name="avail_feeds" value="Feeds" /> Feeds</label>
+
+                  <div class="inline-q">
+                    <span class="q-label">Kasalukuyan bang gumagamit ng feeds? <span class="req-star">*</span></span>
+                    <label class="chk"><input type="radio" name="using_feeds_now" value="Oo" required /> Oo</label>
+                    <label class="chk"><input type="radio" name="using_feeds_now" value="Hindi" required /> Hindi</label>
+
+                    <span class="q-label brand">Kung ang sagot ay Oo, anong brand? <span class="req-star">*</span></span>
+                    <input class="field small-field" name="feeds_brand" type="text" placeholder="Brand or N/A" required />
+                  </div>
+
+                  <label class="chk"><input type="checkbox" name="avail_loans" value="Loans" /> Loans</label>
+                  <label class="chk"><input type="checkbox" name="avail_savings" value="Savings" /> Savings</label>
+                  <label class="chk"><input type="checkbox" name="avail_time_deposit" value="Time Deposit" /> Time Deposit</label>
+                </div>
+                <div class="input-guide">Pumili ng kahit isa (1) o higit pang produkto/serbisyo.</div>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="box">
+                <div class="cell-label">Kung feeds ang pinili, punan ang mga sumusunod:</div>
+                <div class="subtle">Bilang ng alagang hayop:</div>
+              </div>
+
+              <div class="box">
+                <div class="cell-label">Baboy <span class="req-star">*</span></div>
+                <div class="mini-grid">
+                  <div class="mini-item"><span>Sow:</span><input class="field mini-field" name="baboy_sow" type="number" min="0" placeholder="0" required /></div>
+                  <div class="mini-item"><span>Piglet:</span><input class="field mini-field" name="baboy_piglet" type="number" min="0" placeholder="0" required /></div>
+                  <div class="mini-item"><span>Boar:</span><input class="field mini-field" name="baboy_boar" type="number" min="0" placeholder="0" required /></div>
+                  <div class="mini-item"><span>Grower:</span><input class="field mini-field" name="baboy_grower" type="number" min="0" placeholder="0" required /></div>
+                </div>
+              </div>
+
+              <div class="box">
+                <div class="cell-label">Manok <span class="req-star">*</span></div>
+                <div class="mini-grid">
+                  <div class="mini-item"><span>Paitlugin:</span><input class="field mini-field" name="manok_patilugin" type="number" min="0" placeholder="0" required /></div>
+                  <div class="mini-item"><span>Broiler:</span><input class="field mini-field" name="manok_broiler" type="number" min="0" placeholder="0" required /></div>
+                  <div class="mini-item full"><span>Iba pang alaga:</span><input class="field mini-field" name="iba_pang_alaga" type="text" placeholder="Specify or N/A" required /></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="declaration">
+              <div class="decl-title">DEKLARASYON</div>
+              <p>
+                Pinatutunayan ko na lahat ng mga impormasyon sa dokumentong ito ay totoo. Batid ko na anumang pagsisinungaling o pagkakamali ay maaaring
+                batayan sa pagkawalang-bisa, pagkansela ng aking aplikasyon o pagkatiwalag sa pagiging kasapi at handa kong tanggapin ang anumang kaparusahan
+                naaayon sa batas ng Limcoma Multi-Purpose Cooperative.
+              </p>
+
+              <div class="agreement-reminder-box" id="agreementReminderBox">
+                <div class="agreement-reminder-title">
+                  <i class="fas fa-lock"></i> E-Signature Requirement
+                </div>
+                <div class="agreement-reminder-text">
+                  Bago ma-upload ang iyong e-signature at bago makapag-submit, kailangan munang basahin at tanggapin ang:
+                  <strong>Subscription Agreement</strong> at
+                  <strong>Kasunduan, Pagsapi at Subsikripsyon sa Kapital</strong>.
+                </div>
+                <button type="button" id="openKasunduanBtn" class="btn btn-open-agreement">
+                  <i class="fas fa-book-open"></i> Open Kasunduan Agreement
+                </button>
+              </div>
+
+              <div class="sig-grid">
+                <div class="sig-box">
+                  <div class="cell-label">Lagda (Signature Upload) <span class="req-star">*</span></div>
+                  <div class="signature-upload-wrap" id="signatureWrap">
+                    <img id="signaturePreview" alt="Signature Preview" />
+                    <input id="signatureInput" class="photo-input" name="signature_file" type="file" accept="image/*" required />
+                    <div class="photo-hint">Upload signature image</div>
+                  </div>
+                </div>
+
+                <div class="sig-box">
+                  <div class="cell-label">Petsa (Date) <span class="req-star">*</span></div>
+                  <input id="signatureDate" class="field" name="signature_date" type="date" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="submitBtn" type="button" class="btn btn-submit">
+                <i class="fas fa-paper-plane"></i> Submit Application
+              </button>
+
+              <div id="submitMsg" class="msg ok">
+                <i class="fas fa-check-circle"></i> Processing your submission...
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+
+      <footer class="text-center footer">© LIMCOMA MULTI-PURPOSE COOPERATIVE</footer>
+    </div>
+  </main>
+
+  <div class="modal fade" id="incompleteModal" tabindex="-1" role="dialog" aria-labelledby="incompleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+      <div class="modal-content m-card">
+        <div class="modal-header m-head-danger">
+          <h5 class="modal-title font-weight-bold" id="incompleteModalLabel">
+            <i class="fas fa-exclamation-triangle"></i> Incomplete Form
+          </h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity:1;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body m-body">
+          <div style="font-weight:800; margin-bottom:10px;">Please complete the required fields below before submitting:</div>
+          <ul id="missingFieldsList" style="margin:0; padding-left:18px;"></ul>
+          <div class="small text-muted mt-3">Tip: Red highlighted fields still need an answer.</div>
+        </div>
+
+        <div class="modal-footer m-foot">
+          <button type="button" class="btn btn-secondary btn-pill" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="confirmSubmitModal" tabindex="-1" role="dialog" aria-labelledby="confirmSubmitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content m-card">
+        <div class="modal-header m-head-primary">
+          <h5 class="modal-title font-weight-bold" id="confirmSubmitModalLabel">
+            <i class="fas fa-check-circle"></i> Confirm Your Application Details
+          </h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity:1;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body m-body-soft">
+          <div class="p-3 confirm-box">
+            <div class="font-weight-bold mb-2" style="color:#15355a;">Review before submitting:</div>
+            <div id="confirmDetails" class="confirm-scroll"></div>
+          </div>
+          <div class="small text-muted mt-3">
+            Note: Please double-check your information. Click <strong>Confirm Submit</strong> to finalize.
+          </div>
+        </div>
+
+        <div class="modal-footer m-foot">
+          <button type="button" class="btn btn-secondary btn-pill" data-dismiss="modal">Back / Edit</button>
+          <button type="button" id="confirmSubmitBtn" class="btn btn-primary btn-pill-primary">
+            <i class="fas fa-paper-plane"></i> Confirm Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="checklistModal" tabindex="-1" role="dialog" aria-labelledby="checklistModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content m-card">
+        <div class="modal-header m-head-primary">
+          <h5 class="modal-title font-weight-bold" id="checklistModalLabel">
+            <i class="fas fa-clipboard-check"></i> Checklist of Requirements
+          </h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity:1;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body m-body-soft">
+          <div class="p-3 mb-3 bg-white confirm-box">
+            <div class="font-weight-bold mb-2" style="color:#1b4332;">
+              CHECKLIST OF REQUIREMENTS FOR ASSOCIATE MEMBERSHIP (INDIVIDUAL)
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="a1" />
+              <label class="custom-control-label" for="a1">LIMCOMA Membership Application and Subscription Agreement Form</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_a1">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_a1" data-check-target="a1" />
+                <div class="checklist-file-name" id="upload_a1_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="a2" />
+              <label class="custom-control-label" for="a2">Two (2x2) colored ID photo (recent shot)</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_a2">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_a2" accept="image/*" data-check-target="a2" />
+                <div class="checklist-file-name" id="upload_a2_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="a3" />
+              <label class="custom-control-label" for="a3">Photocopy of any government issued ID</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_a3">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_a3" accept="image/*,.pdf" data-check-target="a3" />
+                <div class="checklist-file-name" id="upload_a3_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="a4" />
+              <label class="custom-control-label" for="a4">Birth or marriage certificate from PSA</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_a4">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_a4" accept="image/*,.pdf" data-check-target="a4" />
+                <div class="checklist-file-name" id="upload_a4_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="mt-2" style="font-weight:700; color:#000;">
+              <div>Minimum paid-up share capital: <strong>P 1,000.00</strong></div>
+              <div>One-time membership fee: <strong>P 250.00</strong></div>
+              <div>ID fee: <strong>P 100.00</strong></div>
+              <div>Compulsory savings: <strong>P 150.00</strong></div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white confirm-box">
+            <div class="font-weight-bold mb-2" style="color:#1b4332;">
+              CHECKLIST OF REQUIREMENTS FOR REGULAR MEMBERSHIP (INDIVIDUAL)
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="r1" />
+              <label class="custom-control-label" for="r1">LIMCOMA Membership Application and Subscription Agreement Form</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_r1">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_r1" data-check-target="r1" />
+                <div class="checklist-file-name" id="upload_r1_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="r2" />
+              <label class="custom-control-label" for="r2">Two (2x2) colored ID photo (recent shot)</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_r2">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_r2" accept="image/*" data-check-target="r2" />
+                <div class="checklist-file-name" id="upload_r2_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="r3" />
+              <label class="custom-control-label" for="r3">Photocopy of any government issued ID</label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_r3">Upload file</label>
+                <input type="file" class="checklist-upload-input" id="upload_r3" accept="image/*,.pdf" data-check-target="r3" />
+                <div class="checklist-file-name" id="upload_r3_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox mb-3">
+              <input type="checkbox" class="custom-control-input checklist-check" id="r4" />
+              <label class="custom-control-label" for="r4">Minimum paid-up share capital: <strong>P 10,000.00</strong></label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_r4">Upload proof</label>
+                <input type="file" class="checklist-upload-input" id="upload_r4" accept="image/*,.pdf" data-check-target="r4" />
+                <div class="checklist-file-name" id="upload_r4_name">No file selected</div>
+              </div>
+            </div>
+
+            <div class="checklist-item custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input checklist-check" id="r5" />
+              <label class="custom-control-label" for="r5">ID Fee: <strong>P 100.00</strong></label>
+              <div class="checklist-upload-wrap">
+                <label class="checklist-upload-label" for="upload_r5">Upload proof</label>
+                <input type="file" class="checklist-upload-input" id="upload_r5" accept="image/*,.pdf" data-check-target="r5" />
+                <div class="checklist-file-name" id="upload_r5_name">No file selected</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="small text-muted mt-3">
+            Note: Uploading a file will automatically check its requirement. These checklist uploads are optional and will not block membership form submission.
+          </div>
+        </div>
+
+        <div class="modal-footer m-foot">
+          <button type="button" class="btn btn-secondary btn-pill" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGREEMENT MODAL: SUBSCRIPTION AGREEMENT -->
+  <div class="modal fade" id="subscriptionAgreementModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionAgreementModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content m-card">
+        <div class="modal-header m-head-primary">
+          <h5 class="modal-title font-weight-bold" id="subscriptionAgreementModalLabel">
+            <i class="fas fa-file-signature"></i> Subscription Agreement
+          </h5>
+        </div>
+
+        <div class="modal-body m-body-soft">
+          <div class="agreement-instruction-box">
+            Please read the full agreement below and scroll to the bottom before clicking <strong>I Have Read and Agree</strong>.
+          </div>
+
+          <div id="subscriptionAgreementScroll" class="agreement-scroll-area">
+            <div id="subscriptionAgreementContent" class="agreement-content"></div>
+          </div>
+
+          <div class="custom-control custom-checkbox mt-3 agreement-check-wrap">
+            <input type="checkbox" class="custom-control-input" id="subscriptionAgreementCheck" disabled />
+            <label class="custom-control-label" for="subscriptionAgreementCheck">
+              I confirm that I have read and understood the Subscription Agreement.
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer m-foot">
+          <button type="button" id="subscriptionAgreeBtn" class="btn btn-primary btn-pill-primary" disabled>
+            <i class="fas fa-check-circle"></i> I Have Read and Agree
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGREEMENT MODAL: KASUNDUAN -->
+  <div class="modal fade" id="kasunduanModal" tabindex="-1" role="dialog" aria-labelledby="kasunduanModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content m-card">
+        <div class="modal-header m-head-primary">
+          <h5 class="modal-title font-weight-bold" id="kasunduanModalLabel">
+            <i class="fas fa-book-open"></i> Kasunduan, Pagsapi at Subsikripsyon sa Kapital
+          </h5>
+        </div>
+
+        <div class="modal-body m-body-soft">
+          <div class="agreement-instruction-box">
+            Please read the full Kasunduan below and scroll to the bottom before clicking <strong>I Have Read and Agree</strong>.
+          </div>
+
+          <div id="kasunduanScroll" class="agreement-scroll-area">
+            <div id="kasunduanContent" class="agreement-content"></div>
+          </div>
+
+          <div class="custom-control custom-checkbox mt-3 agreement-check-wrap">
+            <input type="checkbox" class="custom-control-input" id="kasunduanCheck" disabled />
+            <label class="custom-control-label" for="kasunduanCheck">
+              I confirm that I have read and understood the Kasunduan, Pagsapi at Subsikripsyon sa Kapital.
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer m-foot">
+          <button type="button" id="kasunduanAgreeBtn" class="btn btn-primary btn-pill-primary" disabled>
+            <i class="fas fa-check-circle"></i> I Have Read and Agree
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="modal fade" id="logoutConfirmModal" tabindex="-1" role="dialog" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered logout-modal-dialog" role="document">
+      <div class="modal-content logout-modal-card">
+        <div class="logout-modal-top"></div>
+
+        <div class="modal-body logout-modal-body text-center">
+          <div class="logout-icon-wrap">
+            <i class="fas fa-sign-out-alt"></i>
+          </div>
+
+          <h5 class="logout-title" id="logoutConfirmModalLabel">Confirm Logout</h5>
+          <p class="logout-text mb-0">Are you sure you want to logout from your account?</p>
+        </div>
+
+        <div class="modal-footer logout-modal-footer">
+          <button type="button" class="btn logout-cancel-btn" data-dismiss="modal">Cancel</button>
+          <button type="button" id="confirmLogoutBtn" class="btn logout-confirm-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Submission Modal -->
+  <div class="modal fade" id="successSubmitModal" tabindex="-1" role="dialog" aria-labelledby="successSubmitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered success-modal-dialog" role="document">
+      <div class="modal-content success-modal-card">
+        <div class="success-modal-top"></div>
+
+        <div class="modal-body success-modal-body text-center">
+          <div class="success-icon-wrap">
+            <i class="fas fa-check"></i>
+          </div>
+
+          <h5 class="success-title" id="successSubmitModalLabel">Application Submitted Successfully</h5>
+          <p class="success-text mb-0">
+            Your membership application has been submitted successfully.
+          </p>
+        </div>
+
+        <div class="modal-footer success-modal-footer">
+          <button type="button" class="btn success-ok-btn" data-dismiss="modal">
+            <i class="fas fa-check-circle"></i> OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script src="membership_page.js"></script>
+</body>
+</html>

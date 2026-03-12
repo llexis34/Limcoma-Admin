@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="images/limcoma logoo.png" type="image/x-icon" />
+  <title>LIMCOMA MULTI-PURPOSE COOPERATIVE</title>
+</head>
+
+<body>
+  <div class="bg-zoom-container"></div>
+  <canvas id="particle-canvas"></canvas>
+  <div class="grain-overlay"></div>
+  <div class="geometric-overlay"></div>
+
+  <header class="d-flex justify-content-center align-items-center text-white">
+    <div class="logo mr-4">
+      <img src="images/limcoma logoo.png" alt="Logo" class="logo-img" style="height:40px" />
+    </div>
+    <nav class="d-flex">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#about" class="nav-link">About Us</a>
+      <a href="#products" class="nav-link">Products</a>
+      <a href="#loans" class="nav-link">Loans</a>
+      <a href="#membership" class="nav-link">Membership</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section id="home" class="hero-section section-reveal" data-reveal="fade-up">
+      <div class="hero-container">
+        <h1 id="typing-effect" class="reveal-child" data-reveal-child="fade-up">LIMCOMA MULTI-PURPOSE COOPERATIVE</h1>
+        <p class="hero-description reveal-child" data-reveal-child="fade-up">
+          “First ISO 9001 Certified Cooperative" <br>
+          "Premium Quality Feeds & Low-Interest Loans"
+        </p>
+        <div id="membership" class="hero-buttons reveal-child" data-reveal-child="fade-up">
+          <a href="signin.html" class="btn-primary-custom">Apply for Membership!</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about-section section-reveal" data-reveal="fade-left">
+      <div class="container about-wrap">
+        <div class="row align-items-center">
+          <div class="col-lg-6 about-content reveal-on-scroll">
+            <div class="about-move-box">
+              <div class="about-kicker about-anim">ABOUT LIMCOMA</div>
+              <h2 class="about-title about-title-reveal about-anim">A Farmer’s Dream Since 1970<br /></h2>
+              <p class="about-text about-anim">
+                LIMCOMA operates modern facilities, breeding farms, and satellite offices while providing high-quality feeds, accessible loan programs,
+                scholarships, and community support initiatives. More than just a feedmill, LIMCOMA remains committed to uplifting farmers, strengthening
+                communities, and turning the dream of a better life into reality for its members..
+              </p>
+              <ul class="about-list">
+                <li class="about-anim"><i class="fas fa-check-circle"></i> Farmer-owned and operated cooperative</li>
+                <li class="about-anim"><i class="fas fa-check-circle"></i> High-quality, affordable feed production</li>
+                <li class="about-anim"><i class="fas fa-check-circle"></i> Low-interest agricultural loans</li>
+              </ul>
+              <a href="about_us_page.html" class="about-btn about-anim">Learn More About Us</a>
+            </div>
+          </div>
+
+          <div class="col-lg-6 about-image-col reveal-on-scroll">
+            <img src="images/painting.jpg" alt="About LIMCOMA" class="about-image" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="products-section section-reveal" data-reveal="zoom-in">
+      <div class="container text-center">
+        <div class="products-kicker reveal-child" data-reveal-child="fade-up">OUR PRODUCTS</div>
+        <h2 class="products-title reveal-child" data-reveal-child="fade-up">Premium Animal Feeds</h2>
+        <p class="products-subtitle reveal-child" data-reveal-child="fade-up">
+          Scientifically formulated feeds to ensure the health and maximum growth of your livestock.
+        </p>
+
+        <div class="products-wrapper reveal-child" data-reveal-child="fade-up">
+          <button class="product-arrow left" type="button" aria-label="Previous products"><i class="fas fa-chevron-left"></i></button>
+
+          <div class="products-viewport">
+            <div class="row product-cards product-track">
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/cattle.jpg" class="product-img" alt="Cattle Feeds" />
+                  <div class="product-content">
+                    <h5>Cattle Feeds</h5>
+                    <p>Complete nutrition for cattle from calf to mature. Ensures rapid growth and health.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/broiler.jpg" class="product-img" alt="Broiler Feeds" />
+                  <div class="product-content">
+                    <h5>Premium Broiler Feeds</h5>
+                    <p>Balanced diet for broilers and layers. Promotes healthy feathers.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/aqua.jpg" class="product-img" alt="Fish Feeds" />
+                  <div class="product-content">
+                    <h5>Fish Floater Feeds</h5>
+                    <p>Specialized floating feeds for tilapia and milkfish. Maximizes yield.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/pigs.jpg" class="product-img" alt="Hog Feeds" />
+                  <div class="product-content">
+                    <h5>Hog Feeds</h5>
+                    <p>Balanced feed mix for stronger growth, better digestion, and healthier hogs.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/titanium.jpg" class="product-img" alt="Titanium at Balisong Feeds" />
+                  <div class="product-content">
+                    <h5>Titanium at Balisong Feeds</h5>
+                    <p>Formulated to support egg production, shell quality, and hen wellness.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 product-slide">
+                <div class="product-card">
+                  <img src="images/duck.jpg" class="product-img" alt="Starter Feeds" />
+                  <div class="product-content">
+                    <h5>Duck Feeds</h5>
+                    <p>High-protein starter feeds for young livestock to build strength early.</p>
+                    <a href="#" class="view-product">View Products →</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <button class="product-arrow right" type="button" aria-label="Next products"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="loans" class="financial-section section-reveal" data-reveal="fade-up">
+      <div class="container text-center">
+        <div class="fin-kicker reveal-child" data-reveal-child="fade-up">ABOUT LOANS</div>
+        <h2 class="fin-title reveal-child" data-reveal-child="fade-up">Explore LIMCOMA Loan Offers</h2>
+
+        <div class="loans-showcase reveal-child" data-reveal-child="fade-up">
+          <div class="loans-panel">
+            <div class="loans-panel-top">
+              <div class="loans-panel-title">
+                <h3 class="lp-title">Loan Categories</h3>
+                <p class="lp-sub">Filter and preview each loan type. This is for viewing only (no application form here).</p>
+              </div>
+
+              <div class="loan-filters" aria-label="Loan category filters">
+                <button class="loan-filter is-active" type="button" data-filter="all"><i class="fa-solid fa-layer-group"></i> All</button>
+                <button class="loan-filter" type="button" data-filter="business"><i class="fa-solid fa-briefcase"></i> Business</button>
+                <button class="loan-filter" type="button" data-filter="personal"><i class="fa-solid fa-user"></i> Personal</button>
+                <button class="loan-filter" type="button" data-filter="vehicle"><i class="fa-solid fa-car-side"></i> Vehicle</button>
+                <button class="loan-filter" type="button" data-filter="property"><i class="fa-solid fa-house"></i> Property & Asset</button>
+                <button class="loan-filter" type="button" data-filter="secured"><i class="fa-solid fa-lock"></i> Secured / Special</button>
+              </div>
+            </div>
+
+            <div class="loan-grid" aria-label="Loan products grid">
+              <div class="loan-card" data-cat="business">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-briefcase"></i></div><span class="loan-tag">Business</span></div>
+                <h4 class="loan-name">Business Loan</h4>
+                <p class="loan-desc">Capital support for expansion, inventory, and working funds.</p>
+              </div>
+
+              <div class="loan-card" data-cat="business">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-store"></i></div><span class="loan-tag">Business</span></div>
+                <h4 class="loan-name">Micro-Enterprise Loan</h4>
+                <p class="loan-desc">Support for small vendors, sari-sari, and micro businesses.</p>
+              </div>
+
+              <div class="loan-card" data-cat="business">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-truck"></i></div><span class="loan-tag">Business</span></div>
+                <h4 class="loan-name">Business Vehicle Loan</h4>
+                <p class="loan-desc">For delivery / operations vehicles supporting your enterprise.</p>
+              </div>
+
+              <div class="loan-card" data-cat="business">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-seedling"></i></div><span class="loan-tag">Business</span></div>
+                <h4 class="loan-name">Agricultural Loan</h4>
+                <p class="loan-desc">For seeds, livestock, feeds, tools, and farm improvements.</p>
+              </div>
+
+              <div class="loan-card" data-cat="personal">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-user"></i></div><span class="loan-tag">Personal</span></div>
+                <h4 class="loan-name">Personal Loan</h4>
+                <p class="loan-desc">Flexible support for personal needs and emergencies.</p>
+              </div>
+
+              <div class="loan-card" data-cat="personal">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-hand-holding-heart"></i></div><span class="loan-tag">Personal</span></div>
+                <h4 class="loan-name">Pensioner’s Loan</h4>
+                <p class="loan-desc">Support designed for pensioner members.</p>
+              </div>
+
+              <div class="loan-card" data-cat="personal">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-bolt"></i></div><span class="loan-tag">Personal</span></div>
+                <h4 class="loan-name">Short-Term Character Loan</h4>
+                <p class="loan-desc">Quick short-term support for urgent needs.</p>
+              </div>
+
+              <div class="loan-card" data-cat="vehicle">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-car-side"></i></div><span class="loan-tag">Vehicle</span></div>
+                <h4 class="loan-name">Personal Vehicle Loan</h4>
+                <p class="loan-desc">For car purchase / upgrade support.</p>
+              </div>
+
+              <div class="loan-card" data-cat="vehicle">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-motorcycle"></i></div><span class="loan-tag">Vehicle</span></div>
+                <h4 class="loan-name">Motorcycle Loan</h4>
+                <p class="loan-desc">For motorcycle purchase support.</p>
+              </div>
+
+              <div class="loan-card" data-cat="property">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-house"></i></div><span class="loan-tag">Property</span></div>
+                <h4 class="loan-name">Real Estate Loan</h4>
+                <p class="loan-desc">Support for property purchase or development.</p>
+              </div>
+
+              <div class="loan-card" data-cat="property">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-tv"></i></div><span class="loan-tag">Property</span></div>
+                <h4 class="loan-name">Appliance / Gadget / Furniture</h4>
+                <p class="loan-desc">For home essentials and important purchases.</p>
+              </div>
+
+              <div class="loan-card" data-cat="property">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-building"></i></div><span class="loan-tag">Property</span></div>
+                <h4 class="loan-name">Housing Loan</h4>
+                <p class="loan-desc">Home purchase / renovation support options.</p>
+              </div>
+
+              <div class="loan-card" data-cat="secured">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-piggy-bank"></i></div><span class="loan-tag">Secured</span></div>
+                <h4 class="loan-name">Savings-Secured Loan</h4>
+                <p class="loan-desc">Secure financing tied to savings.</p>
+              </div>
+
+              <div class="loan-card" data-cat="secured">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-scale-balanced"></i></div><span class="loan-tag">Secured</span></div>
+                <h4 class="loan-name">Debt-Consolidation Loan</h4>
+                <p class="loan-desc">Combine debts into one repayment plan.</p>
+              </div>
+
+              <div class="loan-card" data-cat="secured">
+                <div class="loan-card-top"><div class="loan-ico"><i class="fa-solid fa-arrows-rotate"></i></div><span class="loan-tag">Secured</span></div>
+                <h4 class="loan-name">Back-to-Back Loan</h4>
+                <p class="loan-desc">Special secured loan arrangement for members.</p>
+              </div>
+            </div>
+
+            <div class="loans-panel-note">
+              <i class="fa-solid fa-circle-info"></i>
+              This section is a <b>view-only showcase</b>. For application, route this to your future form page.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="membership-cta" class="join-section section-reveal" data-reveal="fade-up">
+      <div class="container">
+        <div class="join-card reveal-child" data-reveal-child="fade-up">
+          <span class="join-leaf leaf-1"><i class="fa-solid fa-wheat-awn"></i></span>
+          <span class="join-leaf leaf-2"><i class="fa-solid fa-wheat-awn"></i></span>
+          <span class="join-leaf leaf-3"><i class="fa-solid fa-wheat-awn"></i></span>
+          <span class="join-leaf leaf-4"><i class="fa-solid fa-wheat-awn"></i></span>
+
+          <div class="join-eyebrow">JOIN OUR COMMUNITY</div>
+          <h2 class="join-title">Ready to Join LIMCOMA?</h2>
+          <p class="join-text">
+            Empowering farmers and communities through collective strength.
+            Become part of a cooperative that invests in your growth, provides
+            affordable inputs, and secures your future.
+          </p>
+
+          <div class="join-actions">
+            <a href="signin.html" class="join-btn join-btn-primary">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Become a Member</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer text-white">
+    <div class="container footer-main">
+      <div class="footer-top-row">
+        <div class="footer-brand">
+          <div class="footer-brand-title">LIMCOMA MULTI-PURPOSE COOPERATIVE</div>
+          <div class="footer-brand-sub">CDA Certificate of Registration No. 9520 - 04001852</div>
+        </div>
+
+       <div class="social-links">
+  <span class="footer-label">Follow us:</span>
+
+  <a href="https://www.facebook.com/limcomacooperative" target="_blank" rel="noopener noreferrer" class="mx-2" aria-label="Visit our Facebook page">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://www.youtube.com/@limcomamultipurposecoopera6047" target="_blank" rel="noopener noreferrer" class="mx-2" aria-label="Visit our YouTube channel">
+    <i class="fab fa-youtube"></i>
+  </a>
+</div>
+      </div>
+
+      <div class="footer-grid">
+        <div class="footer-card">
+          <h4><i class="fas fa-eye"></i> Vision</h4>
+          <p>
+            “A relevant and sustainable cooperative of engaged and socio-economically satisfied members”
+          </p>
+        </div>
+
+        <div class="footer-card">
+          <h4><i class="fas fa-bullseye"></i> Mission</h4>
+          <p>
+            “LIMCOMA MPC is committed to uplift the socio-economic condition of members and the community by providing responsive business development and financial services”
+          </p>
+        </div>
+
+        <div class="footer-card">
+          <h4><i class="fas fa-star"></i> Core Values</h4>
+          <ul class="footer-values">
+            <li><strong>L</strong> - Loyalty</li>
+            <li><strong>I</strong> - Integrity</li>
+            <li><strong>C</strong> - Competence</li>
+            <li><strong>A</strong> - Accountability</li>
+          </ul>
+        </div>
+
+        <div class="footer-card">
+          <h4><i class="fas fa-map-marker-alt"></i> Main Office</h4>
+          <p>Gen. Luna St., Sabang, Lipa City, Batangas</p>
+        </div>
+
+        <div class="footer-card">
+          <h4><i class="fas fa-phone-alt"></i> Trunkline Numbers</h4>
+          <p>(043) 756-1841 to 42, 756-2571</p>
+        </div>
+
+        <div class="footer-card">
+          <h4><i class="fas fa-fax"></i> Fax Number</h4>
+          <p>(043) 756-2578</p>
+        </div>
+      </div>
+
+  <div class="footer-branches-wrap" aria-label="LIMCOMA branch carousel">
+  <div class="footer-branches-title">
+    <i class="fas fa-building"></i> Other LIMCOMA Branches
+  </div>
+
+  <div class="footer-branches-grid">
+    <!-- Container 1 -->
+    <div class="footer-branches-carousel">
+      <div class="footer-branches-track">
+        <span class="branch-chip is-active">ALFONSO</span>
+        <span class="branch-chip">ATIMONAN</span>
+        <span class="branch-chip">BALAYAN</span>
+        <span class="branch-chip">CALAPAN</span>
+        <span class="branch-chip">CALAUAG 1970</span>
+        <span class="branch-chip">CALATAGAN</span>
+        <span class="branch-chip">CANDELARIA</span>
+        <span class="branch-chip">CUENCA 1970</span>
+        <span class="branch-chip">GUMACA</span>
+      </div>
+    </div>
+
+    <!-- Container 2 -->
+    <div class="footer-branches-carousel">
+      <div class="footer-branches-track">
+        <span class="branch-chip is-active">LUCENA</span>
+        <span class="branch-chip">MAMBURAO</span>
+        <span class="branch-chip">NAGCARLAN</span>
+        <span class="branch-chip">NASUGBU</span>
+        <span class="branch-chip">PAGSANJAN</span>
+        <span class="branch-chip">PINAMALAYAN</span>
+        <span class="branch-chip">ROSARIO</span>
+        <span class="branch-chip">ROXAS</span>
+        <span class="branch-chip">SAN JOSE</span>
+      </div>
+    </div>
+
+    <!-- Container 3 -->
+    <div class="footer-branches-carousel">
+      <div class="footer-branches-track">
+        <span class="branch-chip is-active">SAN JOSE MINDORO</span>
+        <span class="branch-chip">SAN PABLO 1970</span>
+        <span class="branch-chip">SAN PASCUAL</span>
+        <span class="branch-chip">SINILOAN</span>
+        <span class="branch-chip">TAGKAWAYAN</span>
+        <span class="branch-chip">TANAUAN</span>
+        <span class="branch-chip">TAYABAS</span>
+        <span class="branch-chip">TIAONG</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="footer-bottom">
+        <div class="footer-links">
+          <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+          <span class="mx-2">|</span>
+          <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+        </div>
+
+        <div class="contact-links">
+          <a href="mailto:limcomamultipurposecooperative@gmail.com">
+            <i class="fas fa-envelope"></i> limcomamultipurposecooperative@gmail.com
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="productModal" class="pm-root" aria-hidden="true">
+    <div class="pm-overlay" data-pm-close="true"></div>
+
+    <div class="pm-dialog" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+      <button class="pm-close" type="button" aria-label="Close product details" data-pm-close="true">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="pm-body">
+        <div class="pm-media">
+          <img id="pmImage" src="" alt="" />
+          <div class="pm-glow"></div>
+        </div>
+
+        <div class="pm-content">
+          <div class="pm-badge">
+            <i class="fa-solid fa-box-open"></i>
+            <span>Product Details</span>
+          </div>
+
+          <h3 id="pmTitle" class="pm-title">Product Name</h3>
+          <p id="pmDesc" class="pm-desc">Product description.</p>
+
+          <div class="pm-specs">
+            <div class="pm-spec">
+              <div class="pm-spec-k">Best For</div>
+              <div id="pmBestFor" class="pm-spec-v">—</div>
+            </div>
+            <div class="pm-spec">
+              <div class="pm-spec-k">Highlights</div>
+              <div id="pmHighlights" class="pm-spec-v">—</div>
+            </div>
+          </div>
+
+          <div class="pm-note">
+            <i class="fa-solid fa-circle-info"></i>
+            This is a preview modal. You can connect it later to a full products page.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

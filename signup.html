@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="signin.css" />
+
+  <link rel="shortcut icon" href="images/limcoma logoo.png" type="image/x-icon" />
+  <title>Application Form | LIMCOMA</title>
+</head>
+<body>
+
+  <div class="photo-bg" aria-hidden="true"></div>
+
+  <div class="topbar">
+    <div class="container d-flex align-items-center justify-content-between py-2">
+      <div class="brand">
+        <img src="images/limcoma logoo.png" alt="LIMCOMA Logo">
+        LIMCOMA
+      </div>
+
+      <div class="d-flex align-items-center">
+        <a href="index.html" class="nav-link">Home</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <div class="container">
+
+      <div class="hero-strip">
+        <h1>Application Form</h1>
+        <p>
+          Fill out the form below to apply for LIMCOMA. After submission, you will receive instructions for the next steps.
+        </p>
+      </div>
+
+      <div class="action-shortcuts">
+        <a class="shortcut-btn shortcut-secondary" href="index.html">
+          <i class="fas fa-arrow-left"></i>
+          <span>Go Back to Homepage</span>
+        </a>
+
+        <a class="shortcut-btn shortcut-primary" href="signin.html">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Already have an account? Sign In</span>
+        </a>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-head">
+            <h2>Applicant Information</h2>
+            <small>Please provide accurate details.</small>
+          </div>
+
+          <div class="card-body">
+            <form id="membershipForm">
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>First Name</label>
+                  <input type="text" class="form-control" name="firstName" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Last Name</label>
+                  <input type="text" class="form-control" name="lastName" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Email</label>
+                  <input type="email" class="form-control" name="email" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label>Phone Number</label>
+                  <input type="tel" class="form-control" name="phone" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Password</label>
+                <div class="input-group">
+                  <input type="password" class="form-control" name="password" id="password" required>
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-light border" id="togglePass" aria-label="Toggle password visibility">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="input-group">
+                  <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" required>
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-light border" id="toggleConfirmPass" aria-label="Toggle confirm password visibility">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-main">Sign Up</button>
+
+              <div id="statusMsg" class="status" style="display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-weight:800; background:#ecfdf5; border:1px solid rgba(16,185,129,.25); color:#065f46;">
+                ✅ Signed Up Successfully!
+              </div>
+
+              <div id="errorMsg" class="status" style="display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-weight:800; background:#fef2f2; border:1px solid rgba(239,68,68,.25); color:#991b1b;">
+                ❌ Password and Confirm Password do not match.
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer class="text-center">
+        © LIMCOMA MULTI-PURPOSE COOPERATIVE
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- SUCCESS DIALOG -->
+  <div id="successModal" class="success-modal" aria-hidden="true">
+    <div class="success-backdrop"></div>
+
+    <div class="success-dialog" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <div class="success-dialog-top">
+        <div class="success-icon">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 id="successTitle">Sign Up Successful</h3>
+        <p>
+          Your account has been created successfully. You may now sign in using your registered email and password.
+        </p>
+      </div>
+
+      <div class="success-dialog-body">
+        <div class="success-note">
+          Please keep your login details safe for future access.
+        </div>
+
+        <div class="success-actions">
+          <button type="button" id="stayHereBtn" class="btn btn-modal-secondary">
+            Stay on Page
+          </button>
+          <button type="button" id="goSigninBtn" class="btn btn-modal-primary">
+            Go to Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="signin.js?v=3"></script>
+</body>
+</html>
